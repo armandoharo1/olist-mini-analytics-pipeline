@@ -7,8 +7,10 @@ This is the "Load raw" step of an ELT pipeline:
     Data types and cleaning happen later in dbt, so `raw` is always an exact
     copy of the source files.
   * Two extra columns are added for traceability: `_source_file`, `_loaded_at`.
-  * Each table is dropped and recreated on every run, so running the script
-    twice gives the same result (idempotent).
+  * Each table is emptied (TRUNCATE) and reloaded inside one transaction, so
+    running the script twice gives the same result (idempotent). We do NOT drop
+    the tables: the dbt staging views depend on them. If a load fails, the
+    transaction is rolled back and the previous data stays in place.
   * At the end we compare the number of records in each file vs the rows
     loaded in Postgres, so we know nothing was lost.
 
@@ -62,23 +64,24 @@ def read_header_and_count(path: Path) -> tuple[list[str], int]:
 
 
 def load_table(conn: psycopg.Connection, path: Path, table: str) -> tuple[int, int]:
-    """Drop, recreate and fill raw.<table> from one CSV file."""
+    """Create raw.<table> if needed, empty it and reload it from one CSV file."""
     header, file_records = read_header_and_count(path)
 
     columns_ddl = ", ".join(f'"{col}" text' for col in header)
     columns_list = ", ".join(f'"{col}"' for col in header)
 
     with conn.cursor() as cur:
-        cur.execute(f"DROP TABLE IF EXISTS raw.{table}")
         cur.execute(
             f"""
-            CREATE TABLE raw.{table} (
+            CREATE TABLE IF NOT EXISTS raw.{table} (
                 {columns_ddl},
                 _source_file text        DEFAULT '{path.name}',
                 _loaded_at   timestamptz DEFAULT now()
             )
             """
         )
+        # Empty the table instead of dropping it (dbt views depend on it).
+        cur.execute(f"TRUNCATE TABLE raw.{table}")
         # COPY is Postgres' bulk loader: much faster than row-by-row INSERTs.
         copy_sql = f"COPY raw.{table} ({columns_list}) FROM STDIN WITH (FORMAT csv, HEADER true)"
         with path.open(encoding="utf-8-sig", newline="") as f, cur.copy(copy_sql) as copy:
