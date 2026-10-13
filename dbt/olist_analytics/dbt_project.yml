@@ -38,3 +38,6 @@ models:
     marts:
       +schema: marts            # esquema real: analytics_marts
       +materialized: table      # marts = tablas (se consultan mucho)
+    reconciliation:
+      +schema: reconciliation      # esquema real: analytics_reconciliation
+      +materialized: table
