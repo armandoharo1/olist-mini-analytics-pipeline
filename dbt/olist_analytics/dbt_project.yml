@@ -30,3 +30,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 
+models:
+  olist_analytics:
+    staging:
+      +schema: staging          # los modelos de models/staging/ van al esquema "staging"
+      +materialized: view       # y se crean como vistas

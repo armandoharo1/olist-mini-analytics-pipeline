@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw                    # nombre que usaremos en source('raw', ...)
+    schema: raw                  # esquema real en Postgres
+    description: "Exact copy of the Olist CSV files, loaded by ingestion/load_raw.py. All columns are TEXT."
+    tables:
+      - name: customers
+      - name: geolocation
+      - name: order_items
+      - name: order_payments
+      - name: order_reviews
+      - name: orders
+      - name: products
+      - name: sellers
+      - name: product_category_name_translation
