@@ -35,3 +35,6 @@ models:
     staging:
       +schema: staging          # los modelos de models/staging/ van al esquema "staging"
       +materialized: view       # y se crean como vistas
+    marts:
+      +schema: marts            # esquema real: analytics_marts
+      +materialized: table      # marts = tablas (se consultan mucho)

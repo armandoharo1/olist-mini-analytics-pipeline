@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "One row per product, with the category name in English."
+    columns:
+      - name: product_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: category_name
+        description: "English category. 'unknown' if the product has no category; Portuguese name if there is no translation."
+        data_tests: [not_null]
+
+  - name: dim_sellers
+    description: "One row per seller."
+    columns:
+      - name: seller_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
