@@ -1,8 +1,6 @@
--- Answers (e) a delivery metric: on-time delivery rate and delivery time,
--- plus how lateness affects the customer review score.
--- Grain: one row per month of purchase.
--- Only delivered orders (status 'delivered' with a delivery date) are included.
--- on time = delivered on or before the estimated delivery date.
+-- Question: delivery performance.
+-- Grain: one row per month of purchase, delivered orders only.
+-- On time = delivered on or before the estimated delivery date.
 select
     date_trunc('month', purchase_date)::date                        as month_start,
     to_char(date_trunc('month', purchase_date), 'YYYY-MM')          as year_month,

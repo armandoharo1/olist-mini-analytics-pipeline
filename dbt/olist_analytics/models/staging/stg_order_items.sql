@@ -1,5 +1,4 @@
 -- Grain: one row per item within an order (order_id, order_item_id).
--- An order with 3 units of the same product has 3 rows (order_item_id 1..3).
 select
     order_id,
     order_item_id::int                  as order_item_id,

@@ -1,11 +1,6 @@
--- Answers (c) repeat-purchase rate.
--- Grain: one row (overall metric).
--- Definitions (over customers = real people with at least 1 valid order):
---   repeat_purchase_rate_pct : % of customers with 2+ valid orders
---   strict_repeat_rate_pct   : % of customers who bought on 2+ DIFFERENT days.
---     ~29% of "repeat" customers placed all their orders on the same day
---     (likely one shopping session split into several orders), so this
---     stricter version measures real returning customers.
+-- Question: repeat-purchase rate.
+-- Grain: one row. Base: people (customer_unique_id) with at least one valid order.
+-- Strict rate counts purchases on 2+ different days (same-day orders are often split checkouts).
 with orders_per_customer as (
     select
         customer_unique_id,

@@ -1,5 +1,4 @@
--- Grain: one row per product_id.
--- Fixes the typo in the source column names ("lenght" -> "length").
+-- Grain: one row per product.
 select
     product_id,
     product_category_name,

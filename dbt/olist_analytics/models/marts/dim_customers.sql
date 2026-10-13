@@ -1,7 +1,5 @@
--- Grain: one row per real customer (customer_unique_id).
--- In the source, customer_id is created per order, so the same person can
--- have several customer_ids. Here we collapse them into one row per person.
--- Location = the address used in the customer's most recent order.
+-- Grain: one row per person (customer_unique_id).
+-- Location is taken from the customer's most recent order.
 with customers as (
     select * from {{ ref('stg_customers') }}
 ),
@@ -11,7 +9,6 @@ orders as (
 ),
 
 customer_orders as (
-    -- one row per order, with the person behind it
     select
         customers.customer_unique_id,
         customers.customer_zip_code_prefix,
@@ -21,7 +18,7 @@ customer_orders as (
         row_number() over (
             partition by customers.customer_unique_id
             order by orders.purchased_at desc, orders.order_id
-        ) as recency_rank                     -- 1 = most recent order
+        ) as recency_rank
     from customers
     inner join orders
         on customers.customer_id = orders.customer_id

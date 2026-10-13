@@ -1,5 +1,4 @@
--- Grain: one row per raw geolocation record.
--- The source has ~1M rows for ~19k zip prefixes (many points per prefix).
+-- Grain: one row per raw record (~1M rows for ~19k zip prefixes).
 select
     lpad(geolocation_zip_code_prefix, 5, '0') as zip_code_prefix,
     geolocation_lat::numeric                   as latitude,

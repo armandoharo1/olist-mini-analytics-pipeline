@@ -1,5 +1,4 @@
 -- Grain: one row per item sold within an order (order_id, order_item_id).
--- Used for product/category and seller analysis.
 -- Every order item is kept; is_valid_sale tells whether it counts as revenue.
 with order_items as (
     select * from {{ ref('stg_order_items') }}

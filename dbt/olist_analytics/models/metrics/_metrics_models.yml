@@ -1,9 +1,8 @@
 version: 2
 
-# Curated layer: business-ready tables that answer the assignment questions.
 models:
   - name: mtr_monthly_sales
-    description: "(a) Revenue by month and (b) AOV trend. Revenue = items + freight of valid orders (BRL). Use is_complete_month = true for trend charts."
+    description: "(a) Revenue and (b) AOV by month. Use is_complete_month for trends."
     columns:
       - name: month_start
         data_tests: [unique, not_null]
@@ -11,19 +10,19 @@ models:
         data_tests: [not_null]
 
   - name: mtr_repeat_purchase
-    description: "(c) Repeat-purchase rate: % of customers (customer_unique_id) with 2+ valid orders."
+    description: "(c) Repeat-purchase rate (2+ valid orders) and strict rate (2+ purchase days)."
     columns:
       - name: repeat_purchase_rate_pct
         data_tests: [not_null]
 
   - name: mtr_category_sales
-    description: "(d) Revenue by product category (English), ranked. Revenue = item price + freight of valid items."
+    description: "(d) Revenue by product category, ranked."
     columns:
       - name: category_name
         data_tests: [unique, not_null]
 
   - name: mtr_delivery_performance
-    description: "(e) Delivery: on-time rate, average delivery days and review score on-time vs late, by month of purchase."
+    description: "(e) On-time rate, delivery days and review score (on time vs late) by month."
     columns:
       - name: month_start
         data_tests: [unique, not_null]

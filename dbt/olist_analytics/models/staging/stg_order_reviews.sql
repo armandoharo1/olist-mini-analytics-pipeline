@@ -1,7 +1,4 @@
--- Grain: one row per (review_id, order_id).
--- review_id alone is NOT unique (the same review can be linked to several
--- orders) and some orders have more than one review. Choosing one review
--- per order is a business rule, so it is done later in the marts layer.
+-- Grain: one row per (review_id, order_id). review_id alone is not unique.
 select
     review_id,
     order_id,

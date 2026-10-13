@@ -1,7 +1,5 @@
--- Answers (d) top product categories.
--- Grain: one row per product category (English name).
--- Definition: revenue = sum(item_total) = item price + freight of valid items,
--- consistent with the revenue definition used in fct_orders.
+-- Question: top product categories.
+-- Grain: one row per category. Revenue = item price + freight of valid items.
 with category_sales as (
     select
         products.category_name,

@@ -1,16 +1,8 @@
-
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
 name: 'olist_analytics'
 version: '1.0.0'
 
-# This setting configures which "profile" dbt uses for this project.
 profile: 'olist_analytics'
 
-# These configurations specify where dbt should look for different types of files.
-# The `model-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
 model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
@@ -18,36 +10,26 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-clean-targets:         # directories to be removed by `dbt clean`
+clean-targets:
   - "target"
   - "dbt_packages"
-
-
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
 
 models:
   olist_analytics:
     staging:
-      +schema: staging          # los modelos de models/staging/ van al esquema "staging"
-      +materialized: view       # y se crean como vistas
+      +schema: staging
+      +materialized: view
     marts:
-      +schema: marts            # esquema real: analytics_marts
-      +materialized: table      # marts = tablas (se consultan mucho)
+      +schema: marts
+      +materialized: table
     reconciliation:
-      +schema: reconciliation      # esquema real: analytics_reconciliation
+      +schema: reconciliation
       +materialized: table
     metrics:
-      +schema: metrics             # esquema real: analytics_metrics
+      +schema: metrics
       +materialized: table
 
 vars:
-  # Months with complete data (decision 4). Months outside this window have
-  # very few orders because the dataset starts/ends there; they are kept in the
-  # tables but flagged with is_complete_month = false.
+  # Months with complete data; trend charts use only this window.
   first_complete_month: '2017-01-01'
   last_complete_month: '2018-08-01'

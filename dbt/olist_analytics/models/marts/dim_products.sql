@@ -1,7 +1,5 @@
--- Grain: one row per product (product_id).
--- Adds the English category name. Rules:
---   * product without category            -> 'unknown'
---   * category without English translation -> keep the Portuguese name
+-- Grain: one row per product.
+-- Category fallback: English name -> Portuguese name -> 'unknown'.
 with products as (
     select * from {{ ref('stg_products') }}
 ),

@@ -1,6 +1,6 @@
 -- Grain: one row per order (order_id).
 -- The main fact table: revenue, AOV, repeat purchases and delivery metrics.
--- Combines, per order: its items (summed), its payments (summed),
+-- Items and payments are aggregated before joining to avoid fan-out.
 -- one review (the most recent) and delivery timings.
 with orders as (
     select

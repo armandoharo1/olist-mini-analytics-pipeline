@@ -1,4 +1,4 @@
--- Grain: one row per seller_id.
+-- Grain: one row per seller.
 select
     seller_id,
     lpad(seller_zip_code_prefix, 5, '0') as seller_zip_code_prefix,

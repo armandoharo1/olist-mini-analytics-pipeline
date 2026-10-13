@@ -1,5 +1,4 @@
 -- Grain: one row per payment of an order (order_id, payment_sequential).
--- An order can be paid with several methods (e.g. credit card + voucher).
 select
     order_id,
     payment_sequential::int             as payment_sequential,

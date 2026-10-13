@@ -1,12 +1,7 @@
--- Answers (a) revenue by month and (b) average order value (AOV) trend.
--- Grain: one row per calendar month (month of purchase).
--- Definitions:
---   revenue = sum(order_total) of valid orders (items + freight, BRL)
---   orders  = number of valid orders that have at least one item
---   AOV     = revenue / orders
---   revenue_growth_pct = change vs previous month (only between complete months)
+-- Questions:  revenue by month and AOV trend.
+-- Grain: one row per month of purchase.
+-- Revenue = items + freight of valid orders; AOV = revenue / orders with items.
 with months as (
-    -- every month between the first and last order, even months with no orders
     select distinct month_start
     from {{ ref('dim_date') }}
     where month_start between
@@ -44,6 +39,7 @@ select
     orders,
     revenue,
     aov,
+    -- month-over-month growth, only between complete months
     case
         when is_complete_month
          and lag(is_complete_month) over (order by month_start)

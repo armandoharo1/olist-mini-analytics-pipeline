@@ -1,21 +1,12 @@
 """
-Load the Olist CSV files into the `raw` schema of Postgres.
+Load the Olist CSV files into the `raw` schema of Postgres (ELT "load raw" step).
 
-This is the "Load raw" step of an ELT pipeline:
-  * Every CSV becomes one table in the `raw` schema, with the same column names.
-  * Every column is stored as TEXT: we do NOT clean or convert anything here.
-    Data types and cleaning happen later in dbt, so `raw` is always an exact
-    copy of the source files.
-  * Two extra columns are added for traceability: `_source_file`, `_loaded_at`.
-  * Each table is emptied (TRUNCATE) and reloaded inside one transaction, so
-    running the script twice gives the same result (idempotent). We do NOT drop
-    the tables: the dbt staging views depend on them. If a load fails, the
-    transaction is rolled back and the previous data stays in place.
-  * At the end we compare the number of records in each file vs the rows
-    loaded in Postgres, so we know nothing was lost.
+- All columns are loaded as TEXT; typing and cleaning happen in dbt.
+- Each table is truncated and reloaded in one transaction (idempotent).
+  Tables are not dropped because the dbt staging views depend on them.
+- Row counts are checked against the number of records in each file.
 
-Usage (from the project root, with the virtual environment active):
-    python ingestion/load_raw.py
+Usage: python ingestion/load_raw.py
 """
 
 import csv
@@ -24,10 +15,8 @@ from pathlib import Path
 
 import psycopg
 
-# Folder with the 9 CSV files
 DATA_DIR = Path("data/raw")
 
-# CSV file name -> table name in the raw schema
 FILES = {
     "olist_customers_dataset.csv": "customers",
     "olist_geolocation_dataset.csv": "geolocation",
@@ -40,7 +29,6 @@ FILES = {
     "product_category_name_translation.csv": "product_category_name_translation",
 }
 
-# Same credentials as docker-compose.yml (can be overridden with env variables)
 CONNECTION = {
     "host": os.getenv("POSTGRES_HOST", "localhost"),
     "port": int(os.getenv("POSTGRES_PORT", "5432")),
@@ -51,11 +39,7 @@ CONNECTION = {
 
 
 def read_header_and_count(path: Path) -> tuple[list[str], int]:
-    """Return the column names and the number of records in a CSV file.
-
-    We use the csv module instead of counting lines because some review
-    comments contain line breaks inside quotes (1 record = several lines).
-    """
+    # Count CSV records, not lines: some review comments contain line breaks.
     with path.open(encoding="utf-8-sig", newline="") as f:
         reader = csv.reader(f)
         header = next(reader)
@@ -64,7 +48,6 @@ def read_header_and_count(path: Path) -> tuple[list[str], int]:
 
 
 def load_table(conn: psycopg.Connection, path: Path, table: str) -> tuple[int, int]:
-    """Create raw.<table> if needed, empty it and reload it from one CSV file."""
     header, file_records = read_header_and_count(path)
 
     columns_ddl = ", ".join(f'"{col}" text' for col in header)
@@ -80,12 +63,11 @@ def load_table(conn: psycopg.Connection, path: Path, table: str) -> tuple[int, i
             )
             """
         )
-        # Empty the table instead of dropping it (dbt views depend on it).
         cur.execute(f"TRUNCATE TABLE raw.{table}")
-        # COPY is Postgres' bulk loader: much faster than row-by-row INSERTs.
+
         copy_sql = f"COPY raw.{table} ({columns_list}) FROM STDIN WITH (FORMAT csv, HEADER true)"
         with path.open(encoding="utf-8-sig", newline="") as f, cur.copy(copy_sql) as copy:
-            while chunk := f.read(1024 * 1024):  # 1 MB at a time
+            while chunk := f.read(1024 * 1024):
                 copy.write(chunk)
 
         cur.execute(f"SELECT count(*) FROM raw.{table}")

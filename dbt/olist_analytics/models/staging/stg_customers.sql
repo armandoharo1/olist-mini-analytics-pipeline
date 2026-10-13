@@ -1,6 +1,4 @@
--- Grain: one row per customer_id.
--- NOTE: customer_id is created per order. The real person is customer_unique_id,
--- which is the key we will use for repeat-purchase metrics.
+-- Grain: one row per customer_id (one id per order; customer_unique_id is the person).
 select
     customer_id,
     customer_unique_id,

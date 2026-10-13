@@ -1,6 +1,5 @@
--- Grain: one row per order (order_id).
--- Source timestamps have no time zone. They are Brazilian local time
--- (America/Sao_Paulo); we keep them as plain timestamps and document it.
+-- Grain: one row per order.
+-- Timestamps have no time zone in the source (Brazil local time).
 select
     order_id,
     customer_id,

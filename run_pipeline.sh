@@ -1,18 +1,10 @@
 #!/usr/bin/env bash
-# Runs the whole pipeline end-to-end:
-#   1. start Postgres + Metabase (Docker)
-#   2. load the raw CSVs into Postgres
-#   3. build and test the dbt project (staging -> marts -> metrics -> reconciliation)
-#
-# Usage (from the project root, with the virtual environment active):
-#   bash run_pipeline.sh
-
+# End-to-end run: start services -> load raw CSVs -> build and test dbt models.
+# Usage: bash run_pipeline.sh  (from the project root, virtual environment active)
 set -euo pipefail
 
 echo "==> 1/3 Starting Docker services"
 docker compose up -d
-
-echo "==> Waiting for Postgres to accept connections"
 until docker exec olist_postgres pg_isready -U olist -d olist > /dev/null 2>&1; do
     sleep 2
 done
