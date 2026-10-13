@@ -66,3 +66,34 @@ models:
       - name: item_total
         description: "item_price + freight_value"
         data_tests: [not_null]
+
+  
+  - name: fct_orders
+    description: "One row per order. order_total (items + freight) is the revenue definition. Use is_valid_sale to filter."
+    columns:
+      - name: order_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_customers'), field: customer_unique_id}
+      - name: purchase_date
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_date'), field: date_day}
+      - name: is_valid_sale
+        description: "False for canceled and unavailable orders (see macros/is_valid_sale.sql)."
+        data_tests: [not_null]
+      - name: order_total
+        description: "Revenue of the order: products_value + freight_value (BRL). 0 if the order has no items."
+        data_tests: [not_null]
+      - name: review_score
+        description: "Score (1-5) of the most recent review. NULL if the order has no review."
+        data_tests:
+          - accepted_values:
+              arguments: {values: [1, 2, 3, 4, 5], quote: false}
+      - name: is_late
+        description: "True if delivered after the estimated date. NULL if not delivered."
