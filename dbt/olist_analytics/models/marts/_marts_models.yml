@@ -17,3 +17,19 @@ models:
       - name: seller_id
         description: "Primary key."
         data_tests: [unique, not_null]
+
+  - name: dim_customers
+    description: "One row per real customer (customer_unique_id). Location is taken from the most recent order."
+    columns:
+      - name: customer_unique_id
+        description: "Primary key. Identifies the person across orders."
+        data_tests: [unique, not_null]
+      - name: first_purchase_at
+        data_tests: [not_null]
+
+  - name: dim_date
+    description: "Calendar table: one row per day from 2016-01-01 to 2018-12-31."
+    columns:
+      - name: date_day
+        description: "Primary key."
+        data_tests: [unique, not_null]
