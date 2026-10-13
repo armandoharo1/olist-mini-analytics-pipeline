@@ -41,3 +41,13 @@ models:
     reconciliation:
       +schema: reconciliation      # esquema real: analytics_reconciliation
       +materialized: table
+    metrics:
+      +schema: metrics             # esquema real: analytics_metrics
+      +materialized: table
+
+vars:
+  # Months with complete data (decision 4). Months outside this window have
+  # very few orders because the dataset starts/ends there; they are kept in the
+  # tables but flagged with is_complete_month = false.
+  first_complete_month: '2017-01-01'
+  last_complete_month: '2018-08-01'
