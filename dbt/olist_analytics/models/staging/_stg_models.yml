@@ -1,0 +1,104 @@
+version: 2
+
+# Staging = 1:1 with a raw table: types cast, columns renamed, no business rules.
+models:
+  - name: stg_orders
+    description: "One row per order. Timestamps are Brazil local time (America/Sao_Paulo), no time zone in source."
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_customers'), field: customer_id}
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [delivered, shipped, canceled, unavailable, invoiced, processing, created, approved]
+      - name: purchased_at
+        data_tests: [not_null]
+
+  - name: stg_order_items
+    description: "One row per item of an order (order_id, order_item_id)."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: {combination_of_columns: [order_id, order_item_id]}
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_orders'), field: order_id}
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_products'), field: product_id}
+      - name: seller_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_sellers'), field: seller_id}
+      - name: item_price
+        data_tests: [not_null]
+
+  - name: stg_order_payments
+    description: "One row per payment of an order (order_id, payment_sequential)."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: {combination_of_columns: [order_id, payment_sequential]}
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_orders'), field: order_id}
+      - name: payment_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [credit_card, boleto, voucher, debit_card, not_defined]
+
+  
+
+  - name: stg_order_reviews
+    description: "One row per (review_id, order_id). review_id alone is NOT unique."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: {combination_of_columns: [review_id, order_id]}
+    columns:
+      - name: review_score
+        data_tests:
+          - accepted_values:
+              arguments: {values: [1, 2, 3, 4, 5], quote: false}
+
+  - name: stg_customers
+    description: "One row per customer_id (one id per order). customer_unique_id identifies the person."
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: customer_unique_id
+        data_tests: [not_null]
+
+  - name: stg_sellers
+    description: "One row per seller."
+    columns:
+      - name: seller_id
+        data_tests: [unique, not_null]
+
+  - name: stg_products
+    description: "One row per product."
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+
+  - name: stg_product_category_translation
+    description: "Portuguese -> English category names."
+    columns:
+      - name: product_category_name
+        data_tests: [unique, not_null]
+
+  - name: stg_geolocation
+    description: "Raw geolocation points; many rows per zip prefix."
