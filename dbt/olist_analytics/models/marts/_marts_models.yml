@@ -33,3 +33,36 @@ models:
       - name: date_day
         description: "Primary key."
         data_tests: [unique, not_null]
+
+  - name: fct_order_items
+    description: "One row per item sold within an order. Measures in BRL. Use is_valid_sale to filter revenue."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: {combination_of_columns: [order_id, order_item_id]}
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_products'), field: product_id}
+      - name: seller_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_sellers'), field: seller_id}
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_customers'), field: customer_unique_id}
+      - name: purchase_date
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('dim_date'), field: date_day}
+      - name: is_valid_sale
+        description: "False for canceled and unavailable orders (see macros/is_valid_sale.sql)."
+        data_tests: [not_null]
+      - name: item_total
+        description: "item_price + freight_value"
+        data_tests: [not_null]
