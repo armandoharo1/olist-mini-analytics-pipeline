@@ -1,0 +1,13 @@
+# Entorno virtual de Python (cada persona crea el suyo con requirements.txt)
+.venv/
+
+# Datos crudos: son grandes y se descargan de Kaggle (lo explicaremos en el README)
+data/raw/*
+!data/raw/.gitkeep
+
+# Archivos que genera Python y dbt al ejecutarse
+__pycache__/
+logs/
+
+# Credenciales locales
+.env

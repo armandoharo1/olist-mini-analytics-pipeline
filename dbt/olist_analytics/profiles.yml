@@ -1,0 +1,12 @@
+olist_analytics:              # debe coincidir con "profile:" en dbt_project.yml
+  target: dev                 # entorno que se usa por defecto
+  outputs:
+    dev:
+      type: postgres          # usa el adaptador dbt-postgres
+      host: localhost         # Postgres corre en Docker, expuesto en tu PC
+      port: 5432
+      user: olist             # mismos datos que pusimos en docker-compose.yml
+      password: olist
+      dbname: olist
+      schema: analytics       # esquema por defecto donde dbt crea tablas/vistas
+      threads: 4              # cuántos modelos puede crear en paralelo

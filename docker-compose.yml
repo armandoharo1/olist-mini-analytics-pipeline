@@ -1,0 +1,15 @@
+services:
+  postgres:                          # nombre del servicio
+    image: postgres:16               # imagen oficial de PostgreSQL, versión 16
+    container_name: olist_postgres   # nombre fijo para identificar el contenedor
+    environment:                     # configuración inicial de la base de datos
+      POSTGRES_USER: olist           # usuario
+      POSTGRES_PASSWORD: olist       # contraseña (solo para desarrollo local)
+      POSTGRES_DB: olist             # nombre de la base de datos que se crea
+    ports:
+      - "5432:5432"                  # puerto de tu PC : puerto del contenedor
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # guarda los datos aunque apagues el contenedor
+
+volumes:
+  pgdata:                            # declara el volumen donde se guardan los datos
