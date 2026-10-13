@@ -1,4 +1,4 @@
--- Question: top product categories.
+-- Revenue by product category.
 -- Grain: one row per category. Revenue = item price + freight of valid items.
 with category_sales as (
     select

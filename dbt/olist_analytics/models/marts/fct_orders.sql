@@ -1,5 +1,4 @@
 -- Grain: one row per order (order_id).
--- The main fact table: revenue, AOV, repeat purchases and delivery metrics.
 -- Items and payments are aggregated before joining to avoid fan-out.
 -- one review (the most recent) and delivery timings.
 with orders as (
@@ -55,8 +54,8 @@ latest_review as (
 select
     -- keys
     orders.order_id,
-    customers.customer_unique_id,                               -- -> dim_customers
-    orders.purchased_at::date                  as purchase_date, -- -> dim_date
+    customers.customer_unique_id,
+    orders.purchased_at::date                  as purchase_date,
 
     -- status
     orders.order_status,

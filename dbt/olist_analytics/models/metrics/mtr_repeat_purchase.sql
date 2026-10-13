@@ -1,4 +1,4 @@
--- Question: repeat-purchase rate.
+-- Repeat-purchase rate.
 -- Grain: one row. Base: people (customer_unique_id) with at least one valid order.
 -- Strict rate counts purchases on 2+ different days (same-day orders are often split checkouts).
 with orders_per_customer as (

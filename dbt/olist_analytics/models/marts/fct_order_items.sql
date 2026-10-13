@@ -16,10 +16,10 @@ select
     -- keys
     order_items.order_id,
     order_items.order_item_id,
-    order_items.product_id,                                -- -> dim_products
-    order_items.seller_id,                                 -- -> dim_sellers
-    customers.customer_unique_id,                          -- -> dim_customers
-    orders.purchased_at::date            as purchase_date, -- -> dim_date
+    order_items.product_id,
+    order_items.seller_id,
+    customers.customer_unique_id,
+    orders.purchased_at::date            as purchase_date,
 
     -- order context
     orders.purchased_at,

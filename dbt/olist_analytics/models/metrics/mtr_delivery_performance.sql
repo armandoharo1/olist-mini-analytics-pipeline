@@ -1,4 +1,4 @@
--- Question: delivery performance.
+-- Delivery performance.
 -- Grain: one row per month of purchase, delivered orders only.
 -- On time = delivered on or before the estimated delivery date.
 select

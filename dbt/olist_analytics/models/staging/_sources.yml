@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: raw                    # nombre que usaremos en source('raw', ...)
+  - name: raw
     schema: raw                  # esquema real en Postgres
     description: "Exact copy of the Olist CSV files, loaded by ingestion/load_raw.py. All columns are TEXT."
     tables:

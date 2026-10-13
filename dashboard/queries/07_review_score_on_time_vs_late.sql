@@ -1,4 +1,4 @@
--- (e) Avg review score: on-time vs late delivery
+-- Avg review score: on-time vs late delivery | Metabase: Bar chart
 select
     case when is_late then 'Late' else 'On time' end as delivery,
     round(avg(review_score), 2)                      as avg_review_score

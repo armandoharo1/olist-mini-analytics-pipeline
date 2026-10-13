@@ -1,4 +1,4 @@
--- Questions:  revenue by month and AOV trend.
+-- Monthly revenue and average order value (AOV).
 -- Grain: one row per month of purchase.
 -- Revenue = items + freight of valid orders; AOV = revenue / orders with items.
 with months as (

@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: mtr_monthly_sales
-    description: "(a) Revenue and (b) AOV by month. Use is_complete_month for trends."
+    description: "Revenue and AOV by month. Use is_complete_month for trends."
     columns:
       - name: month_start
         data_tests: [unique, not_null]
@@ -10,19 +10,19 @@ models:
         data_tests: [not_null]
 
   - name: mtr_repeat_purchase
-    description: "(c) Repeat-purchase rate (2+ valid orders) and strict rate (2+ purchase days)."
+    description: "Repeat-purchase rate (2+ valid orders) and strict rate (2+ purchase days)."
     columns:
       - name: repeat_purchase_rate_pct
         data_tests: [not_null]
 
   - name: mtr_category_sales
-    description: "(d) Revenue by product category, ranked."
+    description: "Revenue by product category, ranked."
     columns:
       - name: category_name
         data_tests: [unique, not_null]
 
   - name: mtr_delivery_performance
-    description: "(e) On-time rate, delivery days and review score (on time vs late) by month."
+    description: "On-time rate, delivery days and review score (on time vs late) by month."
     columns:
       - name: month_start
         data_tests: [unique, not_null]

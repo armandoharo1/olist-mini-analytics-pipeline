@@ -3,9 +3,9 @@ olist_analytics:
   outputs:
     dev:
       type: postgres          # usa el adaptador dbt-postgres
-      host: localhost         # Postgres corre en Docker, expuesto en mi pc local
+      host: localhost         
       port: 5432
-      user: olist             # mismos datos usados en docker-compose.yml
+      user: olist            
       password: olist
       dbname: olist
       schema: analytics       # esquema por defecto donde dbt crea tablas/vistas
